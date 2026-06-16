@@ -1,0 +1,18 @@
+{
+    "budget": {
+        "income": 0,
+        "rent": 0,
+        "groceries": 0,
+        "electricity": 0,
+        "education": 0,
+        "basic_needs": 0,
+        "entertainment": 0,
+        "child_needs": 0,
+        "extra_expenses": 0,
+        "shopping": 0,
+        "healthcare": 0,
+        "insurance": 0,
+        "total_expenses": 0,
+        "monthly_balance": 0
+    }
+}
