@@ -24,13 +24,11 @@ template = {
     "monthly_balance": 0
 }
 
-
-
 try:
     with open("E:\\Programming\\Python\\Projects\\Active\\Expense Tracker\\ExpenseTracker.json", "r") as file:
         save = json.load(file)
 except FileNotFoundError:
     budget = {month: template.copy() for month in months}
-
-    with open("ExpenseTracker.json", "w") as file:
+    
+with open("E:\\Programming\\Python\\Projects\\Active\\Expense Tracker\\ExpenseTracker.json", "w") as file:
         json.dump(budget, file, indent=4)
