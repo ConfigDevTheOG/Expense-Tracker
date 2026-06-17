@@ -1,6 +1,8 @@
 import json as js
+import createJSON as CJ
 
 #--------------------------------------------------------------------Main Program---------------------------------------------------------------------------------
+CJ.start()
 
 budget_database = {
     "income": 0,
@@ -79,7 +81,33 @@ def budget():
        js.dump({"budget": budget_database}, file, indent=4)
 
 def expenses():
-   month = input("Enter a month to which you want to add ") 
+   
+   while True:
+
+      month = input("Enter a month to which you want to add expenses: ").lower()
+
+      
+      if month not in [ "january", "february", "march", "april","may", "june", "july", "august", "september", "october", "november", "december"]:
+         print("Please enter a month in full form")
+         continue
+         
+      for i in database.keys():
+         try:
+            if i not in ["total_expenses", "monthly_balance"]:
+               value = float(input(f"Please enter the value of {i} in {month}: "))
+               database[i] = value
+
+         except ValueError:
+            print("Please enter a number")
+
+      break
+  
+   with open("E:\\Programming\\Python\\Projects\\Active\\Expense Tracker\\ExpenseTracker.json", "r") as file:
+      data = js.load(file)
+   
+   with open("E:\\Programming\\Python\\Projects\\Active\\Expense Tracker\\ExpenseTracker.json", "w") as file:
+      data[month] = database
+      js.dump(data, file, indent=4)
 
 while True:
    try:
@@ -93,12 +121,13 @@ while True:
       Please enter the number corresponded with the desired action: """))
 
       if operation == 4:
-         break
+         break 
 
       elif operation == 1:
          budget()
 
+      elif operation == 2:
+         expenses()
+
    except ValueError:
       print("\nPlease enter a number Please enter the number corresponded with the desired action")
-
-   
