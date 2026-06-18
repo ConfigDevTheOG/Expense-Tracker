@@ -1,8 +1,8 @@
 import json as js
-import createJSON as CJ
+import module as mod
 
 #--------------------------------------------------------------------Main Program---------------------------------------------------------------------------------
-CJ.start()
+mod.start()
 
 budget_database = {
     "income": 0,
@@ -22,6 +22,7 @@ budget_database = {
 }
 
 database = {
+   "date": "",
    "income": 0,
     "rent": 0,
     "groceries": 0,
@@ -92,22 +93,30 @@ def expenses():
          continue
          
       for i in database.keys():
-         try:
-            if i not in ["total_expenses", "monthly_balance"]:
-               value = float(input(f"Please enter the value of {i} in {month}: "))
-               database[i] = value
+            try:
+               if i not in ["total_expenses", "monthly_balance", "date"]:
+                  value = float(input(f"Please enter the value of {i} in {month}: "))
+                  database[i] = value
+                  break
 
-         except ValueError:
-            print("Please enter a number")
-
+            except ValueError:
+               print("Please enter a number")
       break
-  
-   with open("E:\\Programming\\Python\\Projects\\Active\\Expense Tracker\\ExpenseTracker.json", "r") as file:
-      data = js.load(file)
+
+   print("Adding expenses and calculating totals...")
    
-   with open("E:\\Programming\\Python\\Projects\\Active\\Expense Tracker\\ExpenseTracker.json", "w") as file:
-      data[month] = database
-      js.dump(data, file, indent=4)
+   total = 0
+   for i in database.values():
+      total += i
+   
+   balance = database['income'] - total
+
+   database["monthly_balance"] = balance
+   database["total_expenses"] = total
+  
+   mod.add_month(month, database) 
+   
+   print("Expenses added successfully")
 
 while True:
    try:
