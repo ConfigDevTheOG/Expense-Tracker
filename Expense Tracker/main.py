@@ -1,8 +1,11 @@
 import json as js
 import module as mod
+import datetime
 
-#--------------------------------------------------------------------Main Program---------------------------------------------------------------------------------
+#------------------------------------------------------------------------------Main Program---------------------------------------------------------------------------------------------
 mod.start()
+
+FILE_PATH_BUDGET = "E:\\Programming\\Python\\Projects\\Active\\Expense Tracker\\budget.json"
 
 budget_database = {
     "income": 0,
@@ -45,13 +48,49 @@ def main():
 if __name__ == "__main__":
    main()
 
+def check_budget(expense, variable):
+    global difference
+
+    try:
+        with open(FILE_PATH_BUDGET, "r") as file:
+            data = js.load(file)["budget"]
+
+        if variable not in data:
+            return False
+
+        budget = int(data[variable])
+
+        if budget < expense:
+            difference = expense - budget
+            return True, difference
+
+        return False
+
+    except FileNotFoundError:
+        print("File not found!")
+
+    except PermissionError:
+        print("Permission denied!")
+
+    except UnicodeDecodeError:
+        print("Encoding issue!")
+
+    except js.JSONDecodeError:
+        print("Could not decode JSON!")
+
+    except TypeError:
+        print("Invalid data type in JSON!")
+
+    return False
+
 def budget():
     for i in budget_database.keys():
      if i not in ["income", "total_expenses", "monthly_balance"]:
             while True:
                try:
-                  avg_budget = float(input(f"\nEnter estimated monthly budget of {i}: "))
+                  avg_budget = float(input(f"Enter estimated monthly budget of {i}: "))
                   budget_database[i] = avg_budget
+                  break
 
                except ValueError:
                   print("Please enter numbers")
@@ -61,6 +100,7 @@ def budget():
                try:
                   avg_income = float(input("Enter estimated monthly income: "))
                   budget_database[i] = avg_income
+                  break
 
                except ValueError:
                   print("Please enter a number")
@@ -81,33 +121,58 @@ def budget():
     with open("E:\\Programming\\Python\\Projects\\Active\\Expense Tracker\\budget.json", "w") as file:
        js.dump({"budget": budget_database}, file, indent=4)
 
+
+
 def expenses():
    
    while True:
 
       month = input("Enter a month to which you want to add expenses: ").lower()
 
-      
       if month not in [ "january", "february", "march", "april","may", "june", "july", "august", "september", "october", "november", "december"]:
          print("Please enter a month in full form")
          continue
          
       for i in database.keys():
-            try:
-               if i not in ["total_expenses", "monthly_balance", "date"]:
-                  value = float(input(f"Please enter the value of {i} in {month}: "))
-                  database[i] = value
+         if i not in ["date", "total_expenses", "monthly_balance", "income"]:
+            while True:
+               try:
+                  expense = float(input(f"Enter the expense of {i} in {month}: "))
+                  difference = check_budget(expense, i)
+
+                  if difference:
+                     print(f"Warning: Expense of {i} exceeds the budget by {difference}!")
+                  
+                  database[i] = expense
                   break
 
-            except ValueError:
-               print("Please enter a number")
+               except ValueError:
+                  print("Please enter numbers")
+         
+         elif i == "income":
+            while True:
+               try:
+                  income = float(input(f"Enter your income of {month}: "))
+                  database[i] = income
+                  break
+
+               except ValueError:
+                  print("Please enter numbers")
+
+         elif i == "date":
+            database[i] = datetime.date.today().strftime("%Y-%m-%d")
       break
 
    print("Adding expenses and calculating totals...")
    
    total = 0
-   for i in database.values():
-      total += i
+    
+   for key, value in database.items():
+    if key not in ["income", "date", "monthly_balance", "total_expenses"]:
+      if isinstance(value, (int, float)):
+         total += value
+         if total > database["income"]:
+            print(f"Warning: Total expenses exceed income by {total - database['income']}!")
    
    balance = database['income'] - total
 
@@ -117,6 +182,8 @@ def expenses():
    mod.add_month(month, database) 
    
    print("Expenses added successfully")
+
+#---------------------------------------------------------------------------------Main loop-----------------------------------------------------------------------------------------
 
 while True:
    try:
