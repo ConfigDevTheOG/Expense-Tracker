@@ -1,5 +1,7 @@
 import json
 
+FILE_PATH_EXPENSE = "E:\\Programming\\Python\\Projects\\Active\\Expense Tracker\\ExpenseTracker.json"
+
 def start():
     months = [
         "january", "february", "march", "april",
@@ -28,21 +30,21 @@ def start():
 
 
     try:
-        with open("E:\\Programming\\Python\\Projects\\Active\\Expense Tracker\\ExpenseTracker.json", "r") as file:
+        with open(FILE_PATH_EXPENSE, "r") as file:
             save = json.load(file)
     except (FileNotFoundError, json.JSONDecodeError):
         budget = {month: template.copy() for month in months}
 
-        with open("E:\\Programming\\Python\\Projects\\Active\\Expense Tracker\\ExpenseTracker.json", "w") as file:
+        with open(FILE_PATH_EXPENSE, "w") as file:
             json.dump(budget, file, indent=4)
 
 def add_month(month, data):
-    with open("E:\\Programming\\Python\\Projects\\Active\\Expense Tracker\\ExpenseTracker.json", "r") as file:
+    with open(FILE_PATH_EXPENSE, "r") as file:
             save = json.load(file)
 
             save[month] = data
 
-    with open ("E:\\Programming\\Python\\Projects\\Active\\Expense Tracker\\ExpenseTracker.json", "w") as file:
+    with open (FILE_PATH_EXPENSE, "w") as file:
          json.dump(save, file, indent=4)
         
 if __name__ == "__main__":
